@@ -18,10 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Penalty.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Equipage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt">
       <Filter>资源文件</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Penalty.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Equipage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
