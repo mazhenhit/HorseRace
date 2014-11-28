@@ -7,6 +7,7 @@ class Equipage
 public:
 	Equipage();
 	~Equipage();
+	Equipage * SortResult(Equipage *pHead);
 
 	string name;
 	string country;

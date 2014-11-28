@@ -68,11 +68,24 @@ void printAllEquipages(Equipage *pHead)
 
 void printResult(Equipage *pHead)
 {
+	int i = 1;
 	Equipage *p = pHead;
+
+	if (pHead == NULL)
+	{
+		cout << "No equipment! " << endl;
+		return;
+	}
+
 	while (p != NULL)
 	{
-		cout << "hhhhhhhh" << endl;
+		cout << "The number " << i << " is:" << endl;
+		cout << p->name << " from " << p->country << endl;
+		p = p->pNext;
+		i++;
 	}
+
+	system("pause");
 }
 
 void printMainMenu()
@@ -96,7 +109,7 @@ void EnterHorseRace(Equipage *pHead)
 	double startTime, passStartLineTime, exceedTime, endTime;
 	double preparationTime = 0;
 	double maxTime = 0;
-	string getInput = "XMG";
+	string getInput;
 
 	cout << "Enter preparation time:" << endl;
 	cin >> preparationTime;
@@ -118,59 +131,80 @@ void EnterHorseRace(Equipage *pHead)
 		cout << fixed << setprecision(1);
 		i++;
 		cout << "!!! Start number " << i << endl;
+		cout << "The name is: " << pEquipage->name << endl;
 		cout << "<press enter at clearance to start>" << endl
 			<< "[n = stop result recording]" << endl;
+		
+		char stopFlag = 0;
 		while (true)
 		{
-			cin >> getInput;
-			if (getInput.empty())
+			cin.get();
+			getInput = cin.get();
+			//cin >> getInput;
+			if (getInput == "\n")
 				break;
+			else if (getInput.at(0) == 'n')
+			{
+				stopFlag = 1;
+				break;
+			}
+
 			cout << "Input Wrong!" << endl;
 		}
-
-		startTime = clock() / 1000.0;
-		//startTime = time(NULL);
-		cout << "countdown from " << preparationTime << " started" << endl << endl;
-
-		cout << "<press enter at start line passage>";
-		while (true)
+		if (stopFlag == 0)
 		{
-			cin >> getInput;
-			if (getInput.empty())
-				break;
-			cout << "Input Wrong!" << endl;
-		}
+			startTime = clock() / 1000.0;
+			//startTime = time(NULL);
+			cout << "countdown from " << preparationTime << " started" << endl << endl;
 
-		passStartLineTime = clock() / 1000.0;
-		cout << "preparation took " << passStartLineTime - startTime << " seconds" << endl;
-		exceedTime = passStartLineTime - startTime - preparationTime;
-		if (exceedTime > 0)
-			cout << "timing started at " << exceedTime << " seconds" << endl << endl;
+			cout << "<press enter at start line passage>";
+			while (true)
+			{
+				//cin.get();
+				getInput = cin.get();
+				//cin >> getInput;
+				if (getInput == "\n")
+					break;
+				cout << "Input Wrong!" << endl;
+			}
+
+			passStartLineTime = clock() / 1000.0;
+			cout << "preparation took " << passStartLineTime - startTime << " seconds" << endl;
+			exceedTime = passStartLineTime - startTime - preparationTime;
+			if (exceedTime > 0)
+				cout << "timing started at " << exceedTime << " seconds" << endl << endl;
+			else
+			{
+				exceedTime = 0;
+				cout << "timing started at " << 0 << " seconds" << endl << endl;
+			}
+
+			cout << "<record penalties and press enter to stop timing> " << endl
+				<< "[p = pulldown, r = refusal, d = dnf, (number) = paus time]" << endl;
+			string penaltyStr;
+			cin >> penaltyStr;
+			endTime = clock() / 1000.0;
+			Penalty penalty;
+			penalty.Resove(penaltyStr);
+			cout << "timing stopped at " << exceedTime + endTime - passStartLineTime << " seconds" << endl << endl;
+			cout << "Total time " << exceedTime + endTime - passStartLineTime - penalty.pTime << " seconds ";
+			pEquipage->time = exceedTime + endTime - passStartLineTime - penalty.pTime;
+			if (exceedTime + endTime - passStartLineTime - penalty.pTime > maxTime)
+				cout << "( " << exceedTime + endTime - passStartLineTime - penalty.pTime - maxTime << " seconds above max)" << endl;
+			int penaltyNum = 0;
+			penaltyNum = 4 * penalty.pNum;
+			if (penalty.rNum > 0)
+				penaltyNum += 4;
+			cout << "Total penalties : " << penaltyNum << " (2 due to time)" << endl << endl;
+			system("pause");
+			system("cls");
+		}
 		else
 		{
-			exceedTime = 0;
-			cout << "timing started at " << 0 << " seconds" << endl << endl;
-		}
-
-		cout << "<record penalties and press enter to stop timing> " << endl
-			<< "[p = pulldown, r = refusal, d = dnf, (number) = paus time]" << endl;
-		string penaltyStr;
-		cin >> penaltyStr;
-		endTime = clock() / 1000.0;
-		Penalty penalty;
-		penalty.Resove(penaltyStr);
-		cout << "timing stopped at " << exceedTime + endTime - passStartLineTime << " seconds" << endl << endl;
-		cout << "Total time " << exceedTime + endTime - passStartLineTime - penalty.pTime << " seconds ";
-		if (exceedTime + endTime - passStartLineTime - penalty.pTime > maxTime)
-			cout << "( " << exceedTime + endTime - passStartLineTime - penalty.pTime - maxTime << " seconds above max)" << endl;
-		int penaltyNum = 0;
-		penaltyNum = 4 * penalty.pNum;
-		if (penalty.rNum > 0)
-			penaltyNum += 4;
-		cout << "Total penalties : " << penaltyNum << " (2 due to time)" << endl << endl;
-
-		system("pause");
-		system("cls");
+			cout << "The Number " << i << " stops result recording!!!" << endl;
+			system("pause");
+			system("cls");
+		}		
 		pEquipage = pEquipage->pNext;
 	}
 }
@@ -213,6 +247,7 @@ int main()
 				}
 				else if (orderNum == "3")
 				{
+					pHead = pHead->SortResult(pHead);
 					printResult(pHead);
 				}
 				else if (orderNum == "4")
