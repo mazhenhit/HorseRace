@@ -10,92 +10,66 @@
 
 using namespace std;
 
-Equipage * addEquipages(Equipage *pHead)
-{
-	char sure = 'N';
-	
-	for (int i = 1;; i++)
+void AddEquipages(Equipage *ptr,int num)
+{	
+	for (int i = 0;i < num; i++)
 	{
 		system("cls");
-		Equipage *pNew = new Equipage();
-		cout << "Enter the Player information!" << endl 
-			<< "The number is:  " << i << endl
-			<< "<Enter \"quit\" to leave>" << endl;
+		cout << "Enter the Player information!" << endl
+			<< "The number is:  " << i + 1 << endl;
+
 		cout << "Enter name:" << endl;
-		cin >> pNew->name;
-		if (pNew->name == "quit")
-			break;
+		cin >> ptr->name;
+
 		cout << "Enter country:" << endl;
-		cin >> pNew->country;
-		if (pNew->country == "quit")
-			break;
-		pNew->number = i;
-		pNew->pNext = NULL;
+		cin >> ptr->country;
 
-		if (pHead == NULL)
-		{
-			pHead = pNew;
-		}
-		else
-		{
-			Equipage *pCurrent = pHead;
-			while (pCurrent->pNext != NULL)
-			{
-				pCurrent = pCurrent->pNext;
-			}
-			pCurrent->pNext = pNew;
-		}
-	}
-	return pHead;
-}
-
-void printAllEquipages(Equipage *pHead)
-{
-	if (pHead == NULL)
-		cout << "No Equipage!" << endl;
-	else
-	{
-		Equipage *p = pHead;
-		while (p != NULL)
-		{
-			cout << "The Number is: " << p->number << endl
-				<< "The Name is: " << p->name << endl
-				<< "The Country is: " << p->country << endl;
-			p = p->pNext;
-		}
+		ptr->number = i + 1;
+		ptr++;
 	}
 }
 
-void printResult(Equipage *pHead)
+void PrintResult(Equipage *ptr, int num)
 {
-	int i = 1;
-	Equipage *p = pHead;
-
-	if (pHead == NULL)
+	if (ptr == NULL)
 	{
-		cout << "No equipment! " << endl;
+		cout << "Please enter the Equipages first!!!" << endl;
+		system("pause");
 		return;
 	}
-
-	while (p != NULL)
+	for (int i = 0; i < num; i++)
 	{
-		cout << "The number " << i << " is:" << endl;
-		cout << p->name << " from " << p->country << endl;
-		p = p->pNext;
-		i++;
+		for (int j = 0; j < num - i; j++)
+		{
+			Equipage *t1 = ptr++;
+			Equipage *t2 = t1++;
+			if (t1->time >t2->time)
+			{
+				//交换。。。。
+				Equipage temp;
+				temp = *t1;
+				*t1 = *t2;
+				*t2 = temp;
+			}
+		}
 	}
-
+	for (int i = 0; i < num; i++)
+	{
+		cout << ptr->name << endl;
+		cout << ptr->country << endl << endl;
+	}
 	system("pause");
+
 }
 
-void printMainMenu()
+void PrintMainMenu()
 {
 	cout << "1. Horsre Race Menu" << endl
 		 << "2. Print the information about the program" << endl
 		 << "3. Exit the program" << endl;
 }
 
-void printHorseRaceMenu()
+void PrintHorseRaceMenu()
 {
 	cout << "1.Add the Equipages" << endl
 		<< "2.Start Horse Race" << endl
@@ -103,35 +77,30 @@ void printHorseRaceMenu()
 		<< "4.Return Main Menu" << endl;
 }
 
-void EnterHorseRace(Equipage *pHead)
+void EnterHorseRace(Equipage *ptr,int num)
 {
 	system("cls");
 	double startTime, passStartLineTime, exceedTime, endTime;
 	double preparationTime = 0;
 	double maxTime = 0;
 	string getInput;
-
+	if (ptr == NULL)
+	{
+		cout << "Please Enter the Equipages first!!!" << endl;
+		return;
+	}
 	cout << "Enter preparation time:" << endl;
 	cin >> preparationTime;
 	cout << "Enter the max time:" << endl;
 	cin >> maxTime;
 	system("cls");
 
-	Equipage *pEquipage = pHead;
-	int i = 0;
-	if (pEquipage == NULL)
-	{
-		cout << "Please add Equipages first! " << endl;
-		system("pause");
-		return;
-	}
-	while (pEquipage != NULL)
+	for (int i = 0; i < num;i++)
 	{
 		//规定输出格式，只有一位小数
 		cout << fixed << setprecision(1);
-		i++;
-		cout << "!!! Start number " << i << endl;
-		cout << "The name is: " << pEquipage->name << endl;
+		cout << "!!! Start number " << i + 1 << endl;
+		cout << "The name is: " << ptr->name << endl;
 		cout << "<press enter at clearance to start>" << endl
 			<< "[n = stop result recording]" << endl;
 		
@@ -140,7 +109,6 @@ void EnterHorseRace(Equipage *pHead)
 		{
 			cin.get();
 			getInput = cin.get();
-			//cin >> getInput;
 			if (getInput == "\n")
 				break;
 			else if (getInput.at(0) == 'n')
@@ -148,21 +116,16 @@ void EnterHorseRace(Equipage *pHead)
 				stopFlag = 1;
 				break;
 			}
-
 			cout << "Input Wrong!" << endl;
 		}
 		if (stopFlag == 0)
 		{
 			startTime = clock() / 1000.0;
-			//startTime = time(NULL);
 			cout << "countdown from " << preparationTime << " started" << endl << endl;
-
 			cout << "<press enter at start line passage>";
 			while (true)
 			{
-				//cin.get();
 				getInput = cin.get();
-				//cin >> getInput;
 				if (getInput == "\n")
 					break;
 				cout << "Input Wrong!" << endl;
@@ -188,7 +151,7 @@ void EnterHorseRace(Equipage *pHead)
 			penalty.Resove(penaltyStr);
 			cout << "timing stopped at " << exceedTime + endTime - passStartLineTime << " seconds" << endl << endl;
 			cout << "Total time " << exceedTime + endTime - passStartLineTime - penalty.pTime << " seconds ";
-			pEquipage->time = exceedTime + endTime - passStartLineTime - penalty.pTime;
+			ptr->time = exceedTime + endTime - passStartLineTime - penalty.pTime;
 			if (exceedTime + endTime - passStartLineTime - penalty.pTime > maxTime)
 				cout << "( " << exceedTime + endTime - passStartLineTime - penalty.pTime - maxTime << " seconds above max)" << endl;
 			int penaltyNum = 0;
@@ -205,11 +168,11 @@ void EnterHorseRace(Equipage *pHead)
 			system("pause");
 			system("cls");
 		}		
-		pEquipage = pEquipage->pNext;
+		ptr++;
 	}
 }
 
-void printInfoAboutProgram()
+void PrintInfoAboutProgram()
 {
 	cout << "Name: Horse Race" << endl
 		<< "Author: XMG" << endl
@@ -218,12 +181,28 @@ void printInfoAboutProgram()
 		<< "Version: 1.0.0.0" << endl;
 }
 
+int GetNumberOfEquipments(string str)
+{
+	int num = 0;
+
+	for (unsigned int i = 0; i < str.length(); i++)
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			num = num * 10 + str[i] - '0';
+		else
+			return 0;
+	}
+	return num;
+}
+
 int main()
 {
+	int numberOfEquipments = 0;
+	Equipage *equipagePtr = NULL;
 	string orderNum;
 	while (true)
 	{
-		printMainMenu();
+		PrintMainMenu();
 		cin >> orderNum;
 		cin.clear();//处理非法输入，Ctrl+z
 		if (orderNum == "1")
@@ -232,23 +211,34 @@ int main()
 			while (true)
 			{
 				system("cls");
-				printHorseRaceMenu();
+				PrintHorseRaceMenu();
 				cin >> orderNum;
 				if (orderNum == "1")
 				{
 					system("cls");
-					pHead = addEquipages(pHead);
-					/*printAllEquipages(pHead);
-					system("pause");*/
+					cout << "Enter the number of the Equipments:" << endl;
+					cin >> orderNum;
+					cin.clear();
+					numberOfEquipments = GetNumberOfEquipments(orderNum);
+					while (numberOfEquipments == 0)
+					{
+						cout << "You entered the worng number!!!" << endl;
+						cout << "Please enter again, the number should bingger than zero!!!" << endl;
+						cin >> orderNum;
+						cin.clear();
+						numberOfEquipments = GetNumberOfEquipments(orderNum);
+					}
+					equipagePtr = new Equipage[numberOfEquipments];
+
+					AddEquipages(equipagePtr, numberOfEquipments);
 				}
 				else if (orderNum == "2")
 				{
-					EnterHorseRace(pHead);
+					EnterHorseRace(equipagePtr, numberOfEquipments);
 				}
 				else if (orderNum == "3")
 				{
-					pHead = pHead->SortResult(pHead);
-					printResult(pHead);
+					PrintResult(equipagePtr, numberOfEquipments);
 				}
 				else if (orderNum == "4")
 				{
@@ -263,7 +253,7 @@ int main()
 		}
 		else if (orderNum == "2")
 		{
-			printInfoAboutProgram();
+			PrintInfoAboutProgram();
 			system("pause");
 			system("cls");
 		}

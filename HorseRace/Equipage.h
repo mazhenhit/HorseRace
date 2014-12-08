@@ -13,6 +13,5 @@ public:
 	string country;
 	int number;
 	double time;
-	Equipage *pNext;
 };
 
